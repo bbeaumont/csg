@@ -1,0 +1,3 @@
+This is an Actionscript implementation of http://evanw.github.com/csg.js/
+
+Initially, it will have a wrapper for Away3D, but other may follow...
