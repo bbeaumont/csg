@@ -1,1 +1,4 @@
-This file was created by IntelliJ IDEA (Nika.1) IU-117.21 for binding GitHub repository
+Constructive Solid Geometry
+
+This is an Actionscript implementation of the http://evanw.github.com/csg.js/ CSG library.
+Initially it will have a wrapper for Away3D, but there may be more.
