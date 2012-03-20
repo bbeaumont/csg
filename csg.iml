@@ -2,16 +2,18 @@
 <module type="Flex" version="4">
   <component name="FlexBuildConfigurationManager" active="csg">
     <configurations>
-      <configuration name="csg" pure-as="true" main-class="Csg" output-file="Csg.swf" output-folder="$MODULE_DIR$/out/production/csg" use-html-wrapper="true" wrapper-template-path="$MODULE_DIR$/html-template">
-        <dependencies target-player="11.0">
+      <configuration name="csg" pure-as="true" main-class="CsgTest" output-file="Csg.swf" output-folder="$MODULE_DIR$/out/production/csg" use-html-wrapper="true" wrapper-template-path="$MODULE_DIR$/html-template">
+        <dependencies target-player="11.1">
           <entries>
             <entry module-name="away3d" build-configuration-name="away3d">
               <dependency linkage="Merged" />
             </entry>
           </entries>
-          <sdk name="flex_sdk_4.5.1.21328" />
+          <sdk name="4.6.0" />
         </dependencies>
-        <compiler-options />
+        <compiler-options>
+          <option name="additionalOptions" value="-swf-version=13" />
+        </compiler-options>
         <packaging-air-desktop />
         <packaging-android />
         <packaging-ios />
@@ -24,7 +26,7 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
     </content>
-    <orderEntry type="jdk" jdkName="flex_sdk_4.5.1.21328" jdkType="__CompositeFlexSdk__" />
+    <orderEntry type="jdk" jdkName="4.6.0" jdkType="__CompositeFlexSdk__" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="away3d" />
   </component>

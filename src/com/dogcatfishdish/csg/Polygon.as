@@ -13,7 +13,7 @@ public class Polygon {
     public function Polygon(verticies:Vector.<Vertex>, shared:Object = null) {
         this.vertices = verticies;
         this.shared = shared;
-        this.plane = Plane.fromPoints(verticies[0].position, verticies[1].position, verticies[3].position);
+        this.plane = Plane.fromPoints(verticies[0].position, verticies[1].position, verticies[2].position);
     }
 
     public function clone():Polygon {

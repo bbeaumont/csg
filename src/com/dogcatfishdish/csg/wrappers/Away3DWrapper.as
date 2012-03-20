@@ -5,63 +5,114 @@
  * Time: 23:06
  * To change this template use File | Settings | File Templates.
  */
-package com.dogcatfishdish.csg.wrappers {
-import away3d.core.base.Geometry;
-import away3d.entities.Mesh;
+package com.dogcatfishdish.csg.wrappers
+{
+	import away3d.core.base.Geometry;
+	import away3d.core.base.SubGeometry;
+	import away3d.entities.Mesh;
+	import away3d.materials.ColorMaterial;
 
-import com.dogcatfishdish.csg.CSG;
+	import com.dogcatfishdish.csg.CSG;
+	import com.dogcatfishdish.csg.Polygon;
+	import com.dogcatfishdish.csg.Polygon;
+	import com.dogcatfishdish.csg.Vertex;
 
-import com.dogcatfishdish.csg.Polygon;
-import com.dogcatfishdish.csg.Vertex;
+	import flash.geom.Vector3D;
 
-import flash.geom.Vector3D;
+	public class Away3DWrapper
+	{
+		public function Away3DWrapper()
+		{
+		}
 
-public class Away3DWrapper {
-    public function Away3DWrapper() {
-    }
 
-    public function toCSG(mesh:Mesh, offset:Vector3D = null, rotation:Vector3D = null):CSG {
+		public static function toCSG(mesh:Mesh):CSG
+		{
+			var subGeometry:SubGeometry = mesh.geometry.subGeometries[0];
+			var srcIndices:Vector.<uint> = subGeometry.indexData;
+			var srcVertices:Vector.<Number> = subGeometry.vertexData;
+			var srcNormals:Vector.<Number> = subGeometry.vertexNormalData;
 
-        var geometry:Geometry = mesh.geometry;
-        offset = offset || new Vector3D();
-        rotation = rotation || new Vector3D();
-        var polygons:Vector.<Polygon> = new Vector.<Polygon>();
+			var polygons:Vector.<Polygon> = new Vector.<Polygon>();
+			var vertices:Vector.<Vertex> = new Vector.<Vertex>();
 
-        var srcIndices : Vector.<uint> = geometry.subGeometries[0].indexData;
-        var srcVertices : Vector.<Number> = geometry.subGeometries[0].vertexData;
-        var srcNormals:Vector.<Number> = geometry.subGeometries[0].vertexNormalData;
+			var px:Number, py:Number, pz:Number;
+			var nx:Number, ny:Number, nz:Number;
+			for (var i:int = 0, l:int = srcIndices.length, index:int = 0; i < l; ++i)
+			{
+				if (i%3 == 0)
+				{
+					polygons.push(new Polygon(vertices));
+					vertices = new Vector.<Vertex>();
+				}
 
-        var len : int = srcIndices.length;
-        var index : int;
-        var x : Number, y : Number, z : Number;
-        var a:Number, b:Number, c:Number;
-        var vertices:Vector.<Vertex> = new Vector.<Vertex>();
-        for (var i : int = 0; i < len; ++i) {
-            if(i % 3 == 0)
-            {
-                polygons.push(new Polygon(vertices));
-                vertices = new Vector.<Vertex>();
-            }
+				index = srcIndices[i]*3;
+				px = srcVertices[index];
+				py = srcVertices[index + 1];
+				pz = srcVertices[index + 2];
+				nx = srcNormals[index];
+				ny = srcNormals[index + 1];
+				nz = srcNormals[index + 2];
+				vertices.push(new Vertex(new Vector3D(px, py, pz), new Vector3D(nx, ny, nz)));
+			}
 
-            index = srcIndices[i]*3;
-            x = srcVertices[index];
-            y = srcVertices[index+1];
-            z = srcVertices[index+2];
-            a = srcNormals[index];
-            b = srcNormals[index+1];
-            c = srcNormals[index+2];
-            vertices.push(new Vertex(new Vector3D(x, y, z), new Vector3D(a, b, c)));
-        }
+			return CSG.fromPolygons(polygons);
+		}
 
-        return CSG.fromPolygons(polygons);
-    }
 
-    public function fromCSG():Mesh {
-        return null;
-    }
+		public static function fromCSG(csg:CSG):Geometry
+		{
 
-    public function getGeometryVertex():void {
+			var subGeometry:SubGeometry = new SubGeometry();
+			subGeometry.autoDeriveVertexNormals = true;
+			subGeometry.autoDeriveVertexTangents = true;
 
-    }
-}
+			var polygons:Vector.<Polygon> = csg.toPolygons();
+
+			var vertices : Vector.<Number> = new Vector.<Number>();
+			var indices:Vector.<uint> = new Vector.<uint>();
+			var tempVertices:Vector.<Vector3D> = new Vector.<Vector3D>();
+
+			//loop through the polygons
+			for (var i:int = 0, len:int = polygons.length; i < len; ++i)
+			{
+				var polygon:Polygon = polygons[i];
+
+				//loop through the geometry vertices
+				for (var j:int = 0, len2:int = polygon.vertices.length; j < len2; ++j)
+				{
+					var vertex:Vertex = polygon.vertices[j];
+
+					//check to see if the vertex already exists
+					if(vertexAlreadyDefined(tempVertices, vertex))
+					{
+
+					}
+					else
+					{
+						tempVertices.push(new Vector3D(vertex.position.x, vertex.position.y, vertex.position.z));
+						vertices.push(vertex.position.x, vertex.position.y, vertex.position.z);
+					}
+				}
+			}
+
+			subGeometry.updateVertexData(vertices);
+			subGeometry.updateIndexData(indices);
+			var geometry:Geometry = new Geometry();
+			geometry.addSubGeometry(subGeometry);
+			return geometry;
+		}
+
+
+		private static function vertexAlreadyDefined(tempVertices:Vector.<Vector3D>, vertex:Vertex):Boolean
+		{
+			for (var i:int = 0, len:int = tempVertices.length; i < len; ++i)
+			{
+				var vector3D:Vector3D = tempVertices[i];
+				if(vector3D.x == vertex.position.x && vector3D.y == vertex.position.y && vector3D.z == vertex.position.z)
+					return true;
+			}
+			return false;
+		}
+	}
 }
