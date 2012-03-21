@@ -8,7 +8,8 @@
 package com.dogcatfishdish.csg {
 public class CSG {
     public var polygons:Vector.<Polygon> = new Vector.<Polygon>();
-    public function CSG() {
+    public function CSG(polygons:Vector.<Polygon> = null) {
+        this.polygons = polygons;
     }
 
     public static function fromPolygons(polygons:Vector.<Polygon>):CSG {

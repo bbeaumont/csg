@@ -10,6 +10,7 @@ public class Polygon {
     public var shared:Object;
     public var vertices:Vector.<Vertex>;
     public var plane:Plane;
+
     public function Polygon(verticies:Vector.<Vertex>, shared:Object = null) {
         this.vertices = verticies;
         this.shared = shared;

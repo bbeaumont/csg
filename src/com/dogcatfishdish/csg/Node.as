@@ -88,7 +88,7 @@ public class Node {
         var f:Vector.<Polygon> = new Vector.<Polygon>();
         var b:Vector.<Polygon> = new Vector.<Polygon>();
         for (var i:int = 0; i < p.length; i++) {
-            plane.splitPolygon(p[1], polygons, polygons, f, b);
+            plane.splitPolygon(p[i], polygons, polygons, f, b);
         }
         if(f.length)
         {

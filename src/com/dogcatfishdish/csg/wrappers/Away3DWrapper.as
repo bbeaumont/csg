@@ -72,47 +72,56 @@ package com.dogcatfishdish.csg.wrappers
 			var vertices : Vector.<Number> = new Vector.<Number>();
 			var indices:Vector.<uint> = new Vector.<uint>();
 			var tempVertices:Vector.<Vector3D> = new Vector.<Vector3D>();
+            var indId:int = 0;
 
 			//loop through the polygons
 			for (var i:int = 0, len:int = polygons.length; i < len; ++i)
 			{
 				var polygon:Polygon = polygons[i];
 
-				//loop through the geometry vertices
+				//loop through the polygon's vertices
 				for (var j:int = 0, len2:int = polygon.vertices.length; j < len2; ++j)
 				{
 					var vertex:Vertex = polygon.vertices[j];
 
 					//check to see if the vertex already exists
-					if(vertexAlreadyDefined(tempVertices, vertex))
+                    // if it does, then add the indicies Id
+                    var tempVertexId:int = vertexAlreadyDefined(tempVertices, vertex);
+					if(tempVertexId != -1)
 					{
-
+                        indices.push(tempVertexId);
 					}
 					else
 					{
+                        //Vertex does not exist, so register a new vertex
 						tempVertices.push(new Vector3D(vertex.position.x, vertex.position.y, vertex.position.z));
 						vertices.push(vertex.position.x, vertex.position.y, vertex.position.z);
+                        indices.push(indId++);
 					}
 				}
 			}
 
+            //update the geometry data
 			subGeometry.updateVertexData(vertices);
 			subGeometry.updateIndexData(indices);
+
+            //add sub geometry
 			var geometry:Geometry = new Geometry();
 			geometry.addSubGeometry(subGeometry);
+
 			return geometry;
 		}
 
 
-		private static function vertexAlreadyDefined(tempVertices:Vector.<Vector3D>, vertex:Vertex):Boolean
+		private static function vertexAlreadyDefined(tempVertices:Vector.<Vector3D>, vertex:Vertex):int
 		{
 			for (var i:int = 0, len:int = tempVertices.length; i < len; ++i)
 			{
 				var vector3D:Vector3D = tempVertices[i];
 				if(vector3D.x == vertex.position.x && vector3D.y == vertex.position.y && vector3D.z == vertex.position.z)
-					return true;
+					return i;
 			}
-			return false;
+			return -1;
 		}
 	}
 }
